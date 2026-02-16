@@ -1,113 +1,85 @@
-# TP3 – Architecture Microservices (REST)
-## Gestion d’un Cabinet Médical
+# 🩺 Gestion d’un Cabinet Médical – Architecture Microservices (TP3)
 
-
-
----
-
-## Contexte
-
-Ce TP correspond à la **troisième phase** du projet pédagogique évolutif  
-**Gestion d’un Cabinet Médical**.
-
-Il consiste à **faire évoluer l’architecture SOA du TP2** vers une  
-**architecture microservices REST**, basée sur des microservices **totalement autonomes**, chacun disposant de sa **propre API** et de sa **propre base de données**, avec un **API Gateway** comme point d’entrée unique.
+Ce projet représente la **troisième phase** de l'évolution du système de gestion de cabinet médical. Nous sommes passés d'une architecture SOA monolithique à une **architecture microservices REST** totalement découplée.
 
 ---
 
-## Objectifs du TP
-
-- Mettre en place une architecture **microservices**
-- Découpler totalement les services (code et données)
-- Supprimer tout module de persistance partagé
-- Introduire un **API Gateway** pour l’exposition des APIs
-- Mettre en œuvre la communication **REST inter-services**
-- Comprendre la différence entre **SOA et Microservices**
+## 🚀 Objectifs du TP
+* **Découplage total** : Chaque service possède sa propre logique et sa propre base de données.
+* **API Gateway** : Mise en place d'un point d'entrée unique via Spring Cloud Gateway.
+* **Communication REST** : Échanges inter-services via `RestTemplate`.
+* **Persistance isolée** : Utilisation d'une base de données H2 dédiée par microservice.
 
 ---
 
-## Architecture globale
+## 🏗️ Architecture Globale
 
-L’architecture est basée sur :
-- Des **microservices métiers autonomes** (Patient, Médecin, Rendez-vous, Consultation)
-- Un **service composite** pour l’agrégation des données (Dossier Patient)
-- Un **API Gateway** servant de point d’entrée unique pour les clients externes
-- Une **base de données par microservice**
+L'architecture est composée de microservices métiers et d'un service d'agrégation, tous accessibles derrière une passerelle.
 
-Les clients n’accèdent jamais directement aux microservices, toutes les requêtes passent par le Gateway.
 
----
 
-## Structure du projet
-
-```text
-cabinetMedicalTp3MS/
-│
-├── api-gateway                  # API Gateway (point d’entrée externe)
-│
-├── patient-service              # Microservice Patient (API + DB)
-├── medecin-service              # Microservice Médecin (API + DB)
-├── rendezvous-service           # Microservice Rendez-vous (API + DB)
-├── consultation-service         # Microservice Consultation (API + DB)
-│
-├── dossier-service              # Service composite (agrégation REST)
-│
-└── pom.xml                      # Projet parent (packaging pom)
+### Structure du projet
+* `api-gateway` : Point d'entrée unique (**Port 8080**).
+* `patient-service` : Gestion des patients (**Port 8082**).
+* `medecin-service` : Gestion des médecins (**Port 8083**).
+* `rendezvous-service` : Gestion des rendez-vous (**Port 8084**).
+* `consultation-service` : Gestion des consultations (**Port 8085**).
+* `dossier-service` : Service composite pour l'agrégation des données.
 
 ---
 
-## Déploiement et exécution
+## 🛠️ Stack Technique
+* **Langage** : Java 21 (OpenJDK Temurin)
+* **Framework** : Spring Boot 3.1 & Spring Cloud
+* **Accès aux données** : Spring Data JPA
+* **Base de données** : H2 Database (In-Memory)
+* **Build Tool** : Maven 3.9
+* **Outils** : Lombok, IntelliJ IDEA, REST Client
 
-**Tests REST Client**
-1️⃣ Consultation Service
-### GET – Lister toutes les consultations
-GET http://localhost:8085/internal/api/v1/consultations
-### POST – Créer une consultation
-![GET Consultations](screenshots/get_consultations.png)
-![POST Consultation](screenshots/post_consultations.png)
+---
 
+## 📡 Endpoints de Test
 
-2️⃣ Rendez-vous Service
-### GET – Récupérer un rendez-vous 
-GET http://localhost:8084/internal/api/v1/rendezvous
-### POST – Créer un rendez-vous
-![GET RendezVous](screenshots/get_rendezvous.png)
-![POST RendezVous](screenshots/post_rendezvous.png)
+### 1️⃣ Consultation Service
+* **GET** `http://localhost:8085/internal/api/v1/consultations`
+* **POST** `http://localhost:8085/internal/api/v1/consultations`
 
+### 2️⃣ Rendez-vous Service
+* **GET** `http://localhost:8084/internal/api/v1/rendezvous`
+* **POST** `http://localhost:8084/internal/api/v1/rendezvous`
 
-3️⃣ Patient Service
-### GET – Lister tous les patients
-GET http://localhost:8082/internal/api/v1/patients
-### POST – Créer un patient
-![GET Patients](screenshots/get_patients.png)
-![POST Patient](screenshots/post_patients.png)
+### 3️⃣ Patient Service
+* **GET** `http://localhost:8082/internal/api/v1/patients`
+* **POST** `http://localhost:8082/internal/api/v1/patients`
 
-4️⃣ Médecin Service
-### GET – Lister tous les médecins
-GET http://localhost:8083/internal/api/v1/medecins
-### POST – Créer un médecin
-![GET Medecins](screenshots/get_medecins.png)
-![POST Medecin](screenshots/post_medecins.png)
+### 4️⃣ Médecin Service
+* **GET** `http://localhost:8083/internal/api/v1/medecins`
+* **POST** `http://localhost:8083/internal/api/v1/medecins`
 
-##Outils utilisés
-Java 21 (OpenJDK Temurin) – langage et runtime
+---
 
-Spring Boot 3.1 – framework principal pour les microservices
+## 📸 Aperçu des tests
 
-Spring Data JPA – accès aux bases de données
+| Service | Liste des données (GET) | Création (POST) |
+| :--- | :--- | :--- |
+| **Consultation** | ![GET Consultations](screenshots/get_consultations.png) | ![POST Consultation](screenshots/post_consultations.png) |
+| **Rendez-vous** | ![GET RendezVous](screenshots/get_rendezvous.png) | ![POST RendezVous](screenshots/post_rendezvous.png) |
+| **Patient** | ![GET Patients](screenshots/get_patients.png) | ![POST Patient](screenshots/post_patients.png) |
+| **Médecin** | ![GET Medecins](screenshots/get_medecins.png) | ![POST Medecin](screenshots/post_medecins.png) |
 
-H2 Database – base de données embarquée pour tests
+---
 
-Maven 3.9 – gestion des dépendances et build
+## ⚙️ Installation et Lancement
 
-IntelliJ IDEA – IDE pour le développement
-
-REST Client – tests REST manuels
-
-Lombok – génération automatique de getters/setters, constructeurs, etc.
-
-API Gateway (Spring Cloud Gateway) – point d’entrée unique pour tous les microservices
-
-Git / GitHub – versionning du code source
-
+1.  **Compiler le projet parent** :
+    ```bash
+    mvn clean install
+    ```
+2.  **Lancer les microservices** :
+    Démarrer chaque service via IntelliJ ou en ligne de commande :
+    ```bash
+    mvn spring-boot:run
+    ```
+3.  **Accès Gateway** :
+    Toutes les APIs sont accessibles via le port `8080` de l'API Gateway.
 
